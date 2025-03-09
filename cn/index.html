@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prime Validation Message</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: #333;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+    .form-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h1 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+      color: #555;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: hsl(148, 100%, 50%);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #72b1f5;
+    }
+    #result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.1);
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h1>Prime Message Validator</h1>
+      <form id="messageForm">
+        <label for="message">Enter Your Message:</label>
+        <input type="text" id="message" placeholder="Enter your message..." required>
+
+        <label for="p">Prime Number (p):</label>
+        <input type="number" id="p" placeholder="Enter a prime number..." required>
+
+        <label for="q">Prime Number (q):</label>
+        <input type="number" id="q" placeholder="Enter another prime number..." required>
+
+        <button type="submit">Send Message</button>
+      </form>
+      <div id="result"></div>
+    </div>
+  </div>
+  <footer>
+    &copy; 2024 Prime Validator App. All Rights Reserved.
+  </footer>
+
+  <script>
+    document.getElementById('messageForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const message = document.getElementById('message').value;
+      const p = parseInt(document.getElementById('p').value);
+      const q = parseInt(document.getElementById('q').value);
+
+      try {
+        const response = await fetch('http://localhost:3000/send-message', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message, p, q }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          document.getElementById('result').innerHTML = <span class="error">Error: ${result.error}</span>;
+        } else {
+          document.getElementById('result').innerHTML = <span class="success">${result.message}: ${result.encryptedMessage}</span>;
+        }
+      } catch (error) {
+        document.getElementById('result').innerHTML = '<span class="error">Error connecting to the server.</span>';
+      }
+    });
+  </script>
+</body>
+</html>
